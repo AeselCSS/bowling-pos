@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Pos from '../containers/Pos';
+import Pos from '../containers/pos/Pos';
 
 function PageRouter() {
     return (
