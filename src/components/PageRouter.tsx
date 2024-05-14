@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Pos from '../containers/Pos';
 
 function PageRouter() {
     return (
@@ -6,7 +7,7 @@ function PageRouter() {
             <Routes>
                 <Route 
                     path="/"
-                    element={<div>Home</div>} 
+                    element={<Pos/>} 
                 />
             </Routes>
         </BrowserRouter>
