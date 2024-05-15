@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from '../types/booking';
 
 function useBookings() {
@@ -14,62 +14,141 @@ function useBookings() {
     }
 
     async function getAllById(id: number) {
-        await getBowlingBookingById(id);
-        //await getAirHockeyBookingById(id);
-        //await getDinnerBookingById(id);
-    }
+        const bookings: (IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[] = [];
+        const bowlingBoookings: IBowlingBooking = await getBowlingBookingById(id);
+        const airHockeyBookings: IAirHockeyBooking = await getAirHockeyBookingById(id);
+        const dinnerBookings: IDinnerBooking = await getDinnerBookingById(id);
 
-    async function getAllBowlingBookings() {
-        const response = await fetch(`${url}/bowling`);
-        const data = await response.json();
-        setBowlingBookings(data);
-    }
-
-    async function getBowlingBookingById(id: number) {
-        const response = await fetch(`${url}/bowling/${id}`);
-        const data = await response.json();
-        setBowlingBookings(data);
-        console.log([data]);
-    }
-
-    async function getAllAirHockeyBookings() {
-        const response = await fetch(`${url}/airhockey`);
-        const data = await response.json();
-        setAirHockeyBookings(data);
-    }
-
-    async function getAirHockeyBookingById(id: number) {
-        const response = await fetch(`${url}/airhockey/${id}`);
-        const data = await response.json();
-        return data;
-    }
-
-    async function getAllDinnerBookings() {
-        const response = await fetch(`${url}/dinner`);
-        const data = await response.json();
-        setDinnerBookings(data);
-    }
-
-    async function getDinnerBookingById(id: number) {
-        const response = await fetch(`${url}/dinner/${id}`);
-        const data = await response.json();
-        return data;
+        if (bowlingBoookings) bookings.push(bowlingBoookings);
+        if (airHockeyBookings) bookings.push(airHockeyBookings);
+        if (dinnerBookings) bookings.push(dinnerBookings);
+        return bookings;
     }
 
     async function getAllByEmail(email: string) {
-        const bowlingResponse = await fetch(`${url}/bowling/email/${email}`);
-        const bowlingData = await bowlingResponse.json();
-        setBowlingBookings(bowlingData);
-        const airHockeyResponse = await fetch(`${url}/airhockey/email/${email}`);
-        const airHockeyData = await airHockeyResponse.json();
-        setAirHockeyBookings(airHockeyData);
-        const dinnerResponse = await fetch(`${url}/dinner/email/${email}`);
-        const dinnerData = await dinnerResponse.json();
-        setDinnerBookings(dinnerData);
+        const bookings: (IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[] = [];
+        const bowlingBoookings: IBowlingBooking[] = await getBowlingBookingsByEmail(email);
+        const airHockeyBookings: IAirHockeyBooking[] = await getAirHockeyBookingsByEmail(email);
+        const dinnerBookings: IDinnerBooking[] = await getDinnerBookingsByEmail(email);
+
+        if (bowlingBoookings) bookings.push(...bowlingBoookings);
+        if (airHockeyBookings) bookings.push(...airHockeyBookings);
+        if (dinnerBookings) bookings.push(...dinnerBookings);
+        return bookings;
+    }
+
+    async function getAllBowlingBookings() {
+        try {
+            const response = await fetch(`${url}/bowling`);
+            const data = await response.json();
+            setBowlingBookings(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getBowlingBookingById(id: number) {
+        try {
+            const response = await fetch(`${url}/bowling/${id}`);
+            if (response.status === 404) {
+                return null;
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error(error);
+            return [];
+        }
+    }
+
+    async function getBowlingBookingsByEmail(email: string) {
+        try {
+            const response = await fetch(`${url}/bowling/email/${email}`);
+            const data = await response.json();
+            if (response.status === 404) {
+                return null;
+            }
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getAllAirHockeyBookings() {
+        try {
+            const response = await fetch(`${url}/airhockey`);
+            const data = await response.json();
+            setAirHockeyBookings(data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getAirHockeyBookingById(id: number) {
+        try {
+            const response = await fetch(`${url}/airhockey/${id}`);
+            if (response.status === 404) {
+                return null;
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getAirHockeyBookingsByEmail(email: string) {
+        try {
+            const response = await fetch(`${url}/airhockey/email/${email}`);
+            const data = await response.json();
+            if (response.status === 404) {
+                return null;
+            }
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getAllDinnerBookings() {
+        try {
+            const response = await fetch(`${url}/dinner`);
+            const data = await response.json();
+            setDinnerBookings(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function getDinnerBookingById(id: number) {
+        try {
+            const response = await fetch(`${url}/dinner/${id}`);
+            if (response.status === 404) {
+                return null;
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function getDinnerBookingsByEmail(email: string) {
+        try {
+            const response = await fetch(`${url}/dinner/email/${email}`);
+            const data = await response.json();
+            if (response.status === 404) {
+                return null;
+            }
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return {
         bowlingBookings,
+        setBowlingBookings,
         airHockeyBookings,
         dinnerBookings,
         getAll,

@@ -12,7 +12,7 @@ function BookingLine({bookingLine}: {bookingLine: { [key: string]: number | stri
     )
 }
 
-function BookingResult({bookings}: {bookings: IBowlingBooking[] | IAirHockeyBooking[] | IDinnerBooking[]}) {
+function BookingResult({bookings}: {bookings: ( IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[]}) {
     return (
     <>
         {bookings.map((booking) => (
