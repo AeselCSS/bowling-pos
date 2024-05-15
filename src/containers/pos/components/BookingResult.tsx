@@ -15,11 +15,11 @@ function BookingLine({bookingLine}: {bookingLine: { [key: string]: number | stri
 function BookingResult({bookings}: {bookings: ( IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[]}) {
     return (
     <>
-        {bookings.map((booking) => (
-            <div className="flex flex-col border border-zinc-400 rounded-md min-w-96 w-2/6 bg-zinc-100 m-5">
+        {bookings.map((booking, index) => (
+            <div key={index}  className="flex flex-col border border-zinc-400 rounded-md min-w-96 w-2/6 bg-zinc-100 m-5">
                 {
                     Object.entries(booking).map(([key, value]) => (
-                        <BookingLine bookingLine={{[key]: value}}/>
+                        <BookingLine key={key} bookingLine={{[key]: value}}/>
                     ))
                 }
             </div>
