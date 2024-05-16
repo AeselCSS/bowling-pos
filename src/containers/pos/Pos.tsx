@@ -2,8 +2,15 @@ import BookingResult from "./components/BookingResult";
 import { useState, useEffect } from 'react';
 import useBookings from '../../hooks/useBookings';
 import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from '../../types/booking';
+import { Dispatch, SetStateAction } from 'react';
+import PageLayout from "../../components/PageLayout";
 
-function SearchBar({setBookingId, setBookingEmail}: {setBookingId: (bookingId: string) => void, setBookingEmail: (bookingEmail: string) => void}){
+interface SearchBarProps {
+    setBookingId: Dispatch<SetStateAction<string>>;
+    setBookingEmail: Dispatch<SetStateAction<string>>;
+}
+
+function SearchBar({setBookingId, setBookingEmail}: SearchBarProps){
     const [searchId, setSearchId] = useState("");
     const [searchEmail, setSearchEmail] = useState("");
 
@@ -46,10 +53,12 @@ function Pos() {
     }, [bookingId, bookingEmail]);
 
     return (
-        <>
+        <PageLayout>
+            <div className="h-1"></div> {/*jeg mister forstanden, jeg kan ik rykke SearchBar nedaf uden at tilføje et element over den. Margin skærer ind i nav bar :') todo:fix lol*/}
             <SearchBar setBookingId={setBookingId} setBookingEmail={setBookingEmail} />
             {!!bookings.length && <BookingResult bookings={bookings} />}
-        </>
+            
+        </PageLayout>
     )
 }
 

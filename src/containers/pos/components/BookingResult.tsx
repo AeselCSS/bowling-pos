@@ -1,11 +1,27 @@
 import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from '../../../types/booking';
-import translateBookingKey from '../helpers/translateBookingKey';
+import {translateBookingKey, translateBookingValue} from '../helpers/translateBooking';
+import { useState } from 'react';
+import {ConfirmModal} from '../../../components/Modal';
 
 function BookingButtons() {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
-        <div className="flex flex-col justify-end w-2/5 pl-5 items-end">
-            <input type="button" value="Cancel" className='bg-red-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3.5 mr-6 rounded-md hover:bg-zinc-50 w-2/5 '/>
-        </div>
+        <>
+            {isOpen && (
+                <ConfirmModal 
+                    setIsOpen={setIsOpen} 
+                    onConfirm={
+                        () => {
+                            console.log("Confirm");
+                        }
+                    }
+                />
+            )}
+            <div className="flex flex-col justify-end w-2/5 pl-5 items-end">
+                <input type="button" value="Cancel" onClick={() => {setIsOpen(true)}} className='bg-red-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3.5 mr-6 rounded-md hover:bg-zinc-50 w-2/5'/>
+            </div>
+        </>
     )
 }
 
@@ -16,7 +32,7 @@ function BookingLine({bookingLine}: {bookingLine: { [key: string]: number | stri
         <div className="flex mb-2">
             <div className="flex bg-white border border-zinc-400 rounded-lg min-w-full p-2.5 m-2.5">
                 <div className="w-1/2 ">{translateBookingKey(lineTitle)}:</div>
-                <div className="w-1/2 text-left">{lineValue}</div>
+                <div className="w-1/2 text-left">{translateBookingValue(lineValue)}</div>
             </div>
         </div>
     )
