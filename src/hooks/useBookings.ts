@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from '../types/booking';
+import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking, IPatchBooking } from '../types/booking';
+import toast from 'react-hot-toast';
 
 function useBookings() {
     const [bowlingBookings, setBowlingBookings] = useState<IBowlingBooking[]>([]);
@@ -146,14 +147,90 @@ function useBookings() {
         }
     }
 
+    async function update(id: number, booking: IPatchBooking, type: string) {
+        switch (type) {
+            case "bowling":
+                return updateBowling(id, booking);
+            case "airhockey":
+                return updateAirHockey(id, booking);
+            case "dinner":
+                return updateDinner(id, booking);
+            default:
+                return null;
+        }
+    }
+
+    async function updateBowling(id: number, booking: IPatchBooking) {
+        try {
+            const response = await fetch(`${url}/bowling/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(booking)
+            });
+            const data = await response.json();
+            if(response.status === 200) {
+                toast.success("Booking updated");
+                return data;
+            } else {
+                toast.error("Booking could not be updated");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function updateAirHockey(id: number, booking: IPatchBooking) {
+        try {
+            const response = await fetch(`${url}/airhockey/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(booking)
+            });
+            const data = await response.json();
+            if(response.status === 200) {
+                toast.success("Booking updated");
+                return data;
+            } else {
+                toast.error("Booking could not be updated");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function updateDinner(id: number, booking: IPatchBooking) {
+        try {
+            const response = await fetch(`${url}/dinner/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(booking)
+            });
+            const data = await response.json();
+            if(response.status === 200) {
+                toast.success("Booking updated");
+                return data;
+            } else {
+                toast.error("Booking could not be updated");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return {
         bowlingBookings,
-        setBowlingBookings,
         airHockeyBookings,
         dinnerBookings,
         getAll,
         getAllById,
-        getAllByEmail
+        getAllByEmail,
+        update
     }
 }
 

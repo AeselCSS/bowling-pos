@@ -56,7 +56,7 @@ function Pos() {
         <PageLayout>
             <div className="h-1"></div> {/*jeg mister forstanden, jeg kan ik rykke SearchBar nedaf uden at tilføje et element over den. Margin skærer ind i nav bar :') todo:fix lol*/}
             <SearchBar setBookingId={setBookingId} setBookingEmail={setBookingEmail} />
-            {!!bookings.length && <BookingResult bookings={bookings} />}
+            {!!bookings.length && <BookingResult bookings={bookings} setBookings={setBookings} />}
             
         </PageLayout>
     )

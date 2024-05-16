@@ -1,26 +1,36 @@
 import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from '../../../types/booking';
 import {translateBookingKey, translateBookingValue} from '../helpers/translateBooking';
-import { useState } from 'react';
+import { Dispatch, useState } from 'react';
 import {ConfirmModal} from '../../../components/Modal';
+import useBookings from '../../../hooks/useBookings';
 
-function BookingButtons() {
-    const [isOpen, setIsOpen] = useState(false);
+interface BookingButtonsProps {
+    booking: IBowlingBooking | IAirHockeyBooking | IDinnerBooking;
+    onCancel: (id:number, bookingType: string) => void;
+}
+
+function BookingButtons({booking, onCancel}: BookingButtonsProps) {
+    let bookingType = booking.hasOwnProperty('laneId') ? 'bowling' : booking.hasOwnProperty('tableId') ? 'airHockey' : 'dinner';
+    const [showCancelModal, setShowCancelModal] = useState(false);
 
     return (
         <>
-            {isOpen && (
-                <ConfirmModal 
-                    setIsOpen={setIsOpen} 
-                    onConfirm={
-                        () => {
-                            console.log("Confirm");
+            {booking.status !== 'CANCELLED' && <>
+                {showCancelModal && (
+                    <ConfirmModal 
+                        setIsOpen={setShowCancelModal} 
+                        onConfirm={
+                            () => {
+                                onCancel(booking.id, bookingType);
+                                setShowCancelModal(false);
+                            }
                         }
-                    }
-                />
-            )}
-            <div className="flex flex-col justify-end w-2/5 pl-5 items-end">
-                <input type="button" value="Cancel" onClick={() => {setIsOpen(true)}} className='bg-red-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3.5 mr-6 rounded-md hover:bg-zinc-50 w-2/5'/>
-            </div>
+                    />
+                )}
+                <div className="flex flex-col justify-end w-2/5 pl-5 items-end">
+                    <input type="button" value="Cancel" onClick={() => {setShowCancelModal(true)}} className='bg-red-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3.5 mr-6 rounded-md hover:bg-zinc-50 w-2/5'/>
+                </div>
+            </>}
         </>
     )
 }
@@ -38,7 +48,18 @@ function BookingLine({bookingLine}: {bookingLine: { [key: string]: number | stri
     )
 }
 
-function BookingResult({bookings}: {bookings: ( IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[]}) {
+interface BookingResultProps {
+    bookings: ( IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[];
+    setBookings: Dispatch<React.SetStateAction<( IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[]>>;
+}
+
+function BookingResult({bookings, setBookings}: BookingResultProps) {
+    const {update} = useBookings();
+    function onCancel(id: number, bookingType: string) {
+        update(id, {status: 'CANCELLED'}, bookingType);
+        setBookings((prev) => prev.map((booking) => booking.id === id ? {...booking, status: 'CANCELLED'} : booking));
+    }
+
     return (
     <>
         {bookings.map((booking, index) => (
@@ -50,7 +71,7 @@ function BookingResult({bookings}: {bookings: ( IBowlingBooking | IAirHockeyBook
                     ))
                 }
             </div>
-            <BookingButtons/>
+            <BookingButtons booking={booking} onCancel={onCancel}/>
         </div>
             
         ))}

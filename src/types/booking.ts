@@ -1,3 +1,14 @@
+interface IPatchBooking {
+    id?: number;
+    customerEmail?: string;
+    start?: string;
+    end?: string;
+    status?: string;
+    laneId?: number;
+    tableId?: number;
+    numberOfGuests?: number;
+}
+
 interface IBooking {
     id: number;
     customerEmail: string;
@@ -21,5 +32,6 @@ interface IDinnerBooking extends IBooking {
 export type {
     IBowlingBooking,
     IAirHockeyBooking,
-    IDinnerBooking
+    IDinnerBooking,
+    IPatchBooking
 }
