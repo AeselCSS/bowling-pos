@@ -5,9 +5,9 @@ function translateBookingKey(key: string) {
         case 'customerEmail':
             return 'E-mail';
         case 'start':
-            return 'Start';
+            return 'Start Time';
         case 'end':
-            return 'End';
+            return 'End Time';
         case 'status':
             return 'Status';
         case 'laneId':
@@ -16,27 +16,36 @@ function translateBookingKey(key: string) {
             return 'Table';
         case 'numberOfGuests':
             return 'Number of Guests';
+        case 'childFriendly':
+            return 'Child Friendly';
         default:
             return key;
     }
 }
 
-function translateBookingValue(value: string | number | boolean | Date | undefined | null) {
-    if(typeof value === 'boolean') {
-        return value ? 'Yes' : 'No';
+function translateBookingValue(key: string, value: string | number | boolean | Date | undefined | null) {
+    if (key === 'start' || key === 'end') {
+        if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+            const date = new Date(value);
+            return {
+                date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
+                time: `${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`
+            };
+        }
+
+        if (value instanceof Date) {
+            return {
+                date: `${value.getDate()}/${value.getMonth() + 1}/${value.getFullYear()}`,
+                time: `${value.getHours()}:${value.getMinutes().toString().padStart(2, '0')}`
+            };
+        }
     }
 
-    if(typeof value === 'string' && !isNaN(Date.parse(value))) {
-        const date = new Date(value);
-        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
-    }
-    
-    if(value instanceof Date) {
-        const date = new Date(value);
-        return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+    if (typeof value === 'boolean') {
+        return value ? 'Yes' : 'No';
     }
 
     return value;
 }
 
-export {translateBookingKey, translateBookingValue};
+export { translateBookingKey, translateBookingValue };
