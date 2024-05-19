@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking, IPatchBooking } from '../types/booking';
+import {useState} from 'react';
+import type {IAirHockeyBooking, IBowlingBooking, IDinnerBooking, IPatchBooking} from '../types/booking';
 import toast from 'react-hot-toast';
 
 function useBookings() {
@@ -223,6 +223,46 @@ function useBookings() {
         }
     }
 
+        async function checkAvailability(start: string, end: string, type: string) {
+            switch (type) {
+                case "bowling":
+                    return checkBowlingAvailability(start, end);
+                case "airhockey":
+                    return checkAirHockeyAvailability(start, end);
+                case "dinner":
+                    return checkDinnerAvailability(start, end);
+                default:
+                    return null;
+            }
+        }
+
+        async function checkBowlingAvailability(start: string, end: string) {
+            try {
+                const response = await fetch(`${url}/bowling-lanes/availability?start=${start}&end=${end}`);
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function checkAirHockeyAvailability(start: string, end: string) {
+            try {
+                const response = await fetch(`${url}/airhockey/availability?start=${start}&end=${end}`);
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function checkDinnerAvailability(start: string, end: string) {
+            try {
+                const response = await fetch(`${url}/dinner/availability?start=${start}&end=${end}`);
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
     return {
         bowlingBookings,
         airHockeyBookings,
@@ -230,8 +270,10 @@ function useBookings() {
         getAll,
         getAllById,
         getAllByEmail,
-        update
+        update,
+        checkAvailability
     }
 }
+
 
 export default useBookings;
