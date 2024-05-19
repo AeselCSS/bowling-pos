@@ -223,14 +223,16 @@ function useBookings() {
         }
     }
 
-        async function checkAvailability(start: string, end: string, type: string) {
+        async function checkAvailability(start: string, end: string, type: string, numberOfGuests?: number) {
+            console.log('Checking availability in useBookings')
+            console.log(`type is ${type}`)
             switch (type) {
                 case "bowling":
                     return checkBowlingAvailability(start, end);
-                case "airhockey":
+                case "airHockey":
                     return checkAirHockeyAvailability(start, end);
                 case "dinner":
-                    return checkDinnerAvailability(start, end);
+                    return checkDinnerAvailability(start, end, numberOfGuests!);
                 default:
                     return null;
             }
@@ -238,6 +240,7 @@ function useBookings() {
 
         async function checkBowlingAvailability(start: string, end: string) {
             try {
+                console.log('Checking bowling availability')
                 const response = await fetch(`${url}/bowling-lanes/availability?start=${start}&end=${end}`);
                 return await response.json();
             } catch (error) {
@@ -247,16 +250,18 @@ function useBookings() {
 
         async function checkAirHockeyAvailability(start: string, end: string) {
             try {
-                const response = await fetch(`${url}/airhockey/availability?start=${start}&end=${end}`);
+                console.log('Checking air hockey availability')
+                const response = await fetch(`${url}/airhockey-tables/availability?start=${start}&end=${end}`);
                 return await response.json();
             } catch (error) {
                 console.error(error);
             }
         }
 
-        async function checkDinnerAvailability(start: string, end: string) {
+        async function checkDinnerAvailability(start: string, end: string, numberOfGuests: number) {
             try {
-                const response = await fetch(`${url}/dinner/availability?start=${start}&end=${end}`);
+                console.log('Checking dinner availability')
+                const response = await fetch(`${url}/restaurants/availability?start=${start}&end=${end}&numberOfGuests=${numberOfGuests}`);
                 return await response.json();
             } catch (error) {
                 console.error(error);

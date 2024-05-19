@@ -4,9 +4,10 @@ interface BookingLineProps {
     bookingLine: { [key: string]: number | string };
     editable: boolean;
     onFieldChange: (field: string, value: any) => void;
+    availability: boolean | null;
 }
 
-function BookingLine({ bookingLine, editable, onFieldChange }: BookingLineProps) {
+function BookingLine({ bookingLine, editable, onFieldChange, availability }: BookingLineProps) {
     const lineTitle = Object.keys(bookingLine)[0];
     const lineValue = Object.values(bookingLine)[0];
 
@@ -50,6 +51,11 @@ function BookingLine({ bookingLine, editable, onFieldChange }: BookingLineProps)
                             </div>
                         </div>
                     </div>
+                    {editable && availability !== null && (
+                        <div className={`text-center ${availability ? 'text-green-600' : 'text-red-600'}`}>
+                            {availability ? 'Available' : 'Not Available'}
+                        </div>
+                    )}
                 </>
             );
         }

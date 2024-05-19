@@ -17,9 +17,8 @@ type EditedBooking = {
 function BookingResult({ bookings, setBookings }: BookingResultProps) {
     const { update, checkAvailability } = useBookings();
     const [editMode, setEditMode] = useState<{ [key: number]: boolean }>({});
-    const [editedBookings, setEditedBookings] = useState<{
-        [key: number]: EditedBooking
-    }>({});
+    const [editedBookings, setEditedBookings] = useState<{ [key: number]: EditedBooking }>({});
+    const [availabilityStatus, setAvailabilityStatus] = useState<{ [key: number]: boolean | null }>({});
 
     function onCancel(id: number, bookingType: string) {
         update(id, { status: 'CANCELLED' }, bookingType);
@@ -57,17 +56,16 @@ function BookingResult({ bookings, setBookings }: BookingResultProps) {
         // Adjust the start and end times if only one part has changed
         if (changes.date) {
             if (!changes.start) editedBooking.start = `${editedBookingDate}T${originalBookingStartTime}`;
-
             if (!changes.end) editedBooking.end = `${editedBookingDate}T${originalBookingEndTime}`;
         }
 
         if (changes.start && !changes.date) editedBooking.end = `${originalBookingDate}T${originalBookingEndTime}`;
-
         if (changes.end && !changes.date) editedBooking.start = `${originalBookingDate}T${originalBookingStartTime}`;
 
         // Ensure the changes are applied before checking availability
+        // is this necessary?
         if (editedBooking.start && editedBooking.end) {
-            checkAvailability(editedBooking.start, editedBooking.end, bookingType).then((isAvailable) => {
+            checkAvailability(editedBooking.start, editedBooking.end, bookingType, editedBooking.numberOfGuests).then((isAvailable) => {
                 if (!isAvailable) {
                     // TODO show error message in the UI
                     console.error('No availability');
@@ -83,8 +81,7 @@ function BookingResult({ bookings, setBookings }: BookingResultProps) {
         }
     }
 
-
-    function handleFieldChange(id: number, field: string, value: any) {
+    function handleFieldChange(id: number, field: string, value: any, bookingType: string) {
         setEditedBookings((prev) => {
             const prevBooking = prev[id] || {};
             const newBooking = { ...prevBooking };
@@ -100,8 +97,30 @@ function BookingResult({ bookings, setBookings }: BookingResultProps) {
             } else if (field === 'end') {
                 const existingDate = prevBooking.end ? prevBooking.end.split('T')[0] : (bookings.find(booking => booking.id === id)?.end.split('T')[0] || '1970-01-01');
                 newBooking.end = `${existingDate}T${value}`;
+            } else if (field === 'numberOfGuests') {
+                newBooking[field] = parseInt(value, 10);
             } else {
                 newBooking[field] = value;
+            }
+
+            if (newBooking.start && newBooking.end) {
+
+                if (newBooking.start && newBooking.end) {
+                    if (bookingType === 'dinner' && newBooking.numberOfGuests === undefined) {
+                        const originalBooking: OriginalBooking = bookings.find((booking) => booking.id === id);
+                        if (originalBooking && 'numberOfGuests' in originalBooking) {
+                            newBooking.numberOfGuests = (originalBooking as IDinnerBooking).numberOfGuests;
+                        }
+                    }
+                }
+                console.log('newBooking')
+                console.log(newBooking)
+                checkAvailability(newBooking.start, newBooking.end, bookingType, newBooking.numberOfGuests).then((isAvailable) => {
+                    setAvailabilityStatus((prevStatus) => ({
+                        ...prevStatus,
+                        [id]: isAvailable,
+                    }));
+                });
             }
 
             return {
@@ -115,6 +134,7 @@ function BookingResult({ bookings, setBookings }: BookingResultProps) {
         <>
             {bookings.map((booking, index) => {
                 const isEditing = editMode[booking.id] || false;
+                const bookingType = booking.hasOwnProperty('laneId') ? 'bowling' : booking.hasOwnProperty('tableId') ? 'airHockey' : 'dinner';
                 return (
                     <div key={index}
                          className={`flex flex-row border border-zinc-400 rounded-md min-w-96 w-2/6 bg-zinc-100 m-5 ${isEditing ? 'animate-flip' : ''}`}>
@@ -125,7 +145,8 @@ function BookingResult({ bookings, setBookings }: BookingResultProps) {
                                         key={key}
                                         bookingLine={{ [key]: value }}
                                         editable={isEditing && ['customerEmail', 'date', 'start', 'end', 'status', 'childFriendly'].includes(key)}
-                                        onFieldChange={(field, newValue) => handleFieldChange(booking.id, field, newValue)}
+                                        onFieldChange={(field, newValue) => handleFieldChange(booking.id, field, newValue, bookingType)}
+                                        availability={availabilityStatus[booking.id] || null}
                                     />
                                 ))
                             }
