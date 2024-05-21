@@ -67,11 +67,9 @@ function BookingResult({ bookings, setBookings }: BookingResultProps) {
         if (editedBooking.start && editedBooking.end) {
             checkAvailability(editedBooking.start, editedBooking.end, bookingType, editedBooking.numberOfGuests).then((isAvailable) => {
                 if (!isAvailable) {
-                    // TODO show error message in the UI
                     console.error('No availability');
                     return;
                 } else {
-                    // TODO show success message in the UI
                     console.log('Available');
                     update(id, editedBooking, bookingType);
                     setBookings((prev) => prev.map((booking) => booking.id === id ? { ...booking, ...editedBooking } : booking));
@@ -113,8 +111,6 @@ function BookingResult({ bookings, setBookings }: BookingResultProps) {
                         }
                     }
                 }
-                console.log('newBooking')
-                console.log(newBooking)
                 checkAvailability(newBooking.start, newBooking.end, bookingType, newBooking.numberOfGuests).then((isAvailable) => {
                     setAvailabilityStatus((prevStatus) => ({
                         ...prevStatus,
