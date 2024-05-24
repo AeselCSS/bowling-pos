@@ -25,9 +25,8 @@ function useBookings() {
     }
 };
 
-    const useGetAllByEmail = (email: string, size: number = 10) => {
-        console.log('useGetAllByEmail', email, size);
-        const response = useInfiniteQuery<BookingResponse<IBowlingBooking | IAirHockeyBooking | IDinnerBooking>, Error>({
+    const useGetAllByEmail = (email: string, size: number = 5) => {
+        return useInfiniteQuery<BookingResponse<IBowlingBooking | IAirHockeyBooking | IDinnerBooking>, Error>({
             queryKey: ['bookings', email],
             queryFn: async ({pageParam = 0}) => {
                 const bookingTypes = ['bowling', 'airhockey', 'dinner'];
@@ -45,9 +44,6 @@ function useBookings() {
             initialPageParam: 0,
             enabled: !!email, // Only fetch data if email is provided
         });
-        // log the number of elements in the pages array
-        console.log('response data', response);
-        return response;
     };
 
     const getBookingById = async (id: number, type: string): Promise<IBowlingBooking | IAirHockeyBooking | IDinnerBooking | null> => {
