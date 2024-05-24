@@ -43,6 +43,7 @@ function useBookings() {
             },
             getNextPageParam: (lastPage) => lastPage.nextPage,
             initialPageParam: 0,
+            enabled: !!email, // Only fetch data if email is provided
         });
         // log the number of elements in the pages array
         console.log('response data', response);

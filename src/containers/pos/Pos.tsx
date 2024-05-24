@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import useBookings from '../../hooks/useBookings';
 import { Dispatch, SetStateAction } from 'react';
 import PageLayout from "../../components/PageLayout";
@@ -13,7 +13,8 @@ function SearchBar({ setBookingId, setBookingEmail }: SearchBarProps) {
     const [searchId, setSearchId] = useState("");
     const [searchEmail, setSearchEmail] = useState("");
 
-    function handleSearch() {
+    function handleSearch(event: React.FormEvent) {
+        event.preventDefault(); // Prevent the form from refreshing the page
         if (!isNaN(Number(searchId))) {
             setBookingId(searchId);
         }
@@ -23,13 +24,13 @@ function SearchBar({ setBookingId, setBookingEmail }: SearchBarProps) {
     }
 
     return (
-        <div className="flex flex-col border border-zinc-400 rounded-md min-w-96 w-2/6 bg-zinc-100 m-5">
+        <form onSubmit={handleSearch} className="flex flex-col border border-zinc-400 rounded-md min-w-96 w-2/6 bg-zinc-100 m-5">
             <input type="text" placeholder="Booking ID" onChange={(e) => { setSearchId(e.target.value) }} className="bg-white border border-zinc-400 rounded-lg w-3/5 p-2.5 m-2.5" />
             <div className="flex justify-between">
                 <input type="text" placeholder="E-mail" onChange={(e) => { setSearchEmail(e.target.value) }} className="bg-white border border-zinc-400 rounded-lg w-3/5 p-2.5 m-2.5" />
-                <input type="button" value="Search" onClick={handleSearch} className="bg-zinc-300 border-zinc-500 border cursor-pointer text-gray-600 py-2 px-4 my-2.5 mr-6 rounded-md hover:bg-zinc-50 " />
+                <button type="submit" className="bg-zinc-300 border-zinc-500 border cursor-pointer text-gray-600 py-2 px-4 my-2.5 mr-6 rounded-md hover:bg-zinc-50 "> Search </button>
             </div>
-        </div>
+        </form>
     );
 }
 
