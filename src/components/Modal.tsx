@@ -1,5 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Dispatch, SetStateAction } from "react";
+import { ITransaction } from "../types/transaction";
 
 interface ConfirmModalProps {
     setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -32,6 +33,25 @@ function ConfirmModal({ setIsOpen, onConfirm }: ConfirmModalProps) {
     );
 }
 
+function TransactionModal({transaction, setIsOpen}: {transaction:ITransaction, setIsOpen: Dispatch<SetStateAction<boolean>>}) {
+    return (
+        <Modal>
+            <div className="text-center">
+                <h2 className="text-2xl font-bold">Transaction successful</h2>
+                <p>Amount: {transaction.amount}</p>
+            </div>
+            <button
+                onClick={() => {
+                    setIsOpen((prev) => !prev);
+                }}
+                className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
+            >
+                Close
+            </button>
+        </Modal>
+    );
+}
+
 
 function Modal({ children }: PropsWithChildren) {
     return (
@@ -44,4 +64,4 @@ function Modal({ children }: PropsWithChildren) {
     );
 }
 
-export {Modal, ConfirmModal};
+export {Modal, ConfirmModal, TransactionModal};

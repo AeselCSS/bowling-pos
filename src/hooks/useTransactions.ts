@@ -4,7 +4,7 @@ function useTransactions() {
     const [transaction, setTransaction] = useState<ITransaction>();
     const url = import.meta.env.VITE_API_URL;
     
-    async function add(transaction: ITransaction) {
+    async function create(transaction: ITransaction) {
         try {
             const response = await fetch(`${url}/transactions`, {
                 method: "POST",
@@ -20,7 +20,7 @@ function useTransactions() {
         }
     }
     
-    return { add, transaction };
+    return { create, transaction };
 
 }
 

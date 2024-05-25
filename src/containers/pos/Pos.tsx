@@ -7,7 +7,6 @@ import useSaleProducts from '../../hooks/useSaleProducts';
 import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from '../../types/booking';
 import { Dispatch, SetStateAction } from 'react';
 import PageLayout from "../../components/PageLayout";
-import { ISaleProduct } from "../../types/saleProduct";
 import { IBasketProduct } from "../../types/basketProduct";
 
 interface SearchBarProps {
@@ -70,12 +69,15 @@ function Pos() {
                     <SearchBar setBookingId={setBookingId} setBookingEmail={setBookingEmail} />
                     {!!bookings.length && <BookingResult bookings={bookings} setBookings={setBookings} />}
                 </div>
-                <div className="flex-row w-2/6 m-5">
+                <div className="flex-row w-3/12 m-5">
                     <SaleProducts saleProducts={saleProducts} setBasket={setBasket} />
                 </div>
-                <div className="flex-row w-2/6 m-5">
-                    <Basket basket={basket} />
-                </div>
+                {basket.length > 0 &&
+                    <div className="flex-row w-3/12 m-5">
+                        <Basket basket={basket} setBasket={setBasket} />
+                    </div>
+                }
+                
             </div>
         </PageLayout>
     )
