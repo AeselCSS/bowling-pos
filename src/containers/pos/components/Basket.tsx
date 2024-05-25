@@ -65,7 +65,7 @@ function BasketProduct({basketProduct, setBasket}: IBasketProductProps) {
                             });
                         });
                     }}
-                >
+                > 
                     +
                 </button>
                 <button 
