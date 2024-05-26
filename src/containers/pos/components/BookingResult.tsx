@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from '../../../types/booking';
+import { IBasketProduct } from '../../../types/basketProduct';
 import useBookings from '../../../hooks/useBookings';
 import BookingLine from './BookingLine';
 import BookingButtons from './BookingButtons';
@@ -7,6 +8,7 @@ import BookingButtons from './BookingButtons';
 interface BookingResultProps {
     bookings: (IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[];
     setBookings: React.Dispatch<React.SetStateAction<(IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[]>>;
+    setBasket: React.Dispatch<React.SetStateAction<(IBasketProduct)[]>>;
 }
 
 type OriginalBooking = IBowlingBooking | IAirHockeyBooking | IDinnerBooking | undefined;
@@ -14,11 +16,28 @@ type EditedBooking = {
     [key: string]: any;
 } & Partial<IBowlingBooking & IAirHockeyBooking & IDinnerBooking>;
 
-function BookingResult({ bookings, setBookings }: BookingResultProps) {
-    const { update, checkAvailability } = useBookings();
+function BookingResult({ bookings, setBookings, setBasket }: BookingResultProps) {
+    const { update, checkAvailability, getBookingPrice } = useBookings();
     const [editMode, setEditMode] = useState<{ [key: number]: boolean }>({});
     const [editedBookings, setEditedBookings] = useState<{ [key: number]: EditedBooking }>({});
     const [availabilityStatus, setAvailabilityStatus] = useState<{ [key: number]: boolean | null }>({});
+
+    async function onAddBookingToBasket(booking: IBowlingBooking | IAirHockeyBooking | IDinnerBooking) {
+        const bookingPrice = await getBookingPrice(booking);
+        const basketProduct: IBasketProduct = {
+            id: booking.id,
+            name: booking.customerEmail,
+            price: bookingPrice,
+            quantity: 1,
+        };
+        
+        setBasket((prevBasket) => {
+            if(prevBasket.find((product) => product.id === basketProduct.id)) {
+                return prevBasket;
+            }
+            return [...prevBasket, basketProduct];
+        });
+    }
 
     function onCancel(id: number, bookingType: string) {
         update(id, { status: 'CANCELLED' }, bookingType);
@@ -155,6 +174,7 @@ function BookingResult({ bookings, setBookings }: BookingResultProps) {
                             onEditToggle={onEditToggle}
                             onAccept={onAccept}
                             isEditing={isEditing}
+                            onAddBookingToBasket={onAddBookingToBasket}
                         />
                     </div>
                 );

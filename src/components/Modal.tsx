@@ -33,7 +33,7 @@ function ConfirmModal({ setIsOpen, onConfirm }: ConfirmModalProps) {
     );
 }
 
-function TransactionModal({transaction, setIsOpen}: {transaction:ITransaction, setIsOpen: Dispatch<SetStateAction<boolean>>}) {
+function TransactionModal({transaction, onClose}: {transaction:ITransaction, onClose: () => void}) {
     return (
         <Modal>
             <div className="text-center">
@@ -42,7 +42,7 @@ function TransactionModal({transaction, setIsOpen}: {transaction:ITransaction, s
             </div>
             <button
                 onClick={() => {
-                    setIsOpen((prev) => !prev);
+                    onClose();
                 }}
                 className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
             >

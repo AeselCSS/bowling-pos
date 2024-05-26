@@ -11,9 +11,10 @@ interface BookingButtonsProps {
     onEditToggle: (id: number) => void;
     onAccept: (id: number, bookingType: string) => void;
     isEditing: boolean;
+    onAddBookingToBasket: (booking: IBowlingBooking | IAirHockeyBooking | IDinnerBooking) => void;
 }
 
-function BookingButtons({ booking, onCancel, onEditToggle, onAccept, isEditing }: BookingButtonsProps) {
+function BookingButtons({ booking, onCancel, onEditToggle, onAccept, isEditing, onAddBookingToBasket }: BookingButtonsProps) {
     let bookingType = booking.hasOwnProperty('laneId') ? 'bowling' : booking.hasOwnProperty('tableId') ? 'airHockey' : 'dinner';
     const [showCancelModal, setShowCancelModal] = useState(false);
 
@@ -44,8 +45,8 @@ function BookingButtons({ booking, onCancel, onEditToggle, onAccept, isEditing }
                                 className='bg-zinc-300 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mr-2 rounded-md hover:bg-zinc-50 w-1.5/5'
                                 onClick={() => onEditToggle(booking.id)}><FaRegEdit/></button>
                             <button
-                                className='bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mr-2 rounded-md hover:bg-zinc-50 w-1.5/5'>
-                                <MdControlPoint/></button>
+                                className='bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mr-2 rounded-md hover:bg-zinc-50 w-1.5/5'
+                                onClick={() => onAddBookingToBasket(booking)}><MdControlPoint/></button>
                         </>
                     )}
                 </div>

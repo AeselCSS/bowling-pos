@@ -32,7 +32,7 @@ function SearchBar({setBookingId, setBookingEmail}: SearchBarProps){
             <input type="text" placeholder="Booking ID" onChange={(e) => {setSearchId(e.target.value)}} className="bg-white border border-zinc-400 rounded-lg w-3/5 p-2.5 m-2.5"/>
             <div className="flex justify-between">
                 <input type="text" placeholder="E-mail" onChange={(e) => {setSearchEmail(e.target.value)}} className="bg-white border border-zinc-400 rounded-lg w-3/5 p-2.5 m-2.5"/>
-                <input type="button" value="Search" onClick={handleSearch} className="bg-zinc-300 border-zinc-500 border cursor-pointer text-gray-600 py-2 px-4 my-2.5 mr-6 rounded-md hover:bg-zinc-50 "/>
+                <input type="button" value="Search" onClick={handleSearch} className="bg-zinc-300 border-zinc-500 border cursor-pointer text-gray-600 py-2 px-4 my-2.5 mr-6 rounded-md hover:bg-zinc-50"/>
             </div>
         </div>
     )
@@ -58,16 +58,12 @@ function Pos() {
         })();
     }, [bookingId, bookingEmail]);
 
-    useEffect(() => {
-        console.log(basket);
-    }, [basket]);
-
     return (
         <PageLayout>
             <div className="flex">
                 <div className="flex-row w-2/6 m-5">
                     <SearchBar setBookingId={setBookingId} setBookingEmail={setBookingEmail} />
-                    {!!bookings.length && <BookingResult bookings={bookings} setBookings={setBookings} />}
+                    {!!bookings.length && <BookingResult bookings={bookings} setBookings={setBookings} setBasket={setBasket} />}
                 </div>
                 <div className="flex-row w-3/12 m-5">
                     <SaleProducts saleProducts={saleProducts} setBasket={setBasket} />
@@ -77,7 +73,6 @@ function Pos() {
                         <Basket basket={basket} setBasket={setBasket} />
                     </div>
                 }
-                
             </div>
         </PageLayout>
     )

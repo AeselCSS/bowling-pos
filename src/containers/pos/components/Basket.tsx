@@ -101,20 +101,24 @@ function Basket({basket, setBasket}: IBasketProps) {
 
     useEffect(() => {
         if (transaction.amount > 0) {
-            setTransactionModal(true);
             create(transaction);
-            setBasket([]);
-        }
+            setTransactionModal(true);
+        } 
     }, [transaction]);
+
+    function onTransactionModalClose() {
+        setTransactionModal(false);
+        setBasket([]);
+    }
 
     return (
         <>
-            {showTransactionModal && (
+            {showTransactionModal && 
                 <TransactionModal
-                    setIsOpen={setTransactionModal}
+                    onClose={onTransactionModalClose}
                     transaction={transaction}
                 />
-            )}
+            }
             <div className="flex flex-row border border-zinc-400 rounded-md w-5/6 bg-zinc-100">
                 <div className="flex flex-col w-3/5">
                     <h2 className="text-lg font-bold m-2.5">Basket</h2>
