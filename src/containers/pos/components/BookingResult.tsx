@@ -154,7 +154,7 @@ function BookingResult({ bookings, setBookings, setBasket }: BookingResultProps)
                 const bookingType = booking.hasOwnProperty('laneId') ? 'bowling' : booking.hasOwnProperty('tableId') ? 'airHockey' : 'dinner';
                 return (
                     <div key={index}
-                         className={`flex flex-row border border-zinc-400 rounded-md min-w-96 w-5/6 bg-zinc-100 my-5 ${isEditing ? 'animate-flip' : ''}`}>
+                         className={`flex flex-row border border-zinc-400 rounded-md min-w-96 w-full bg-zinc-100 my-5 ${isEditing ? 'animate-flip' : ''}`}>
                         <div className="flex flex-col w-3/5">
                             {
                                 Object.entries(booking).map(([key, value]) => (
