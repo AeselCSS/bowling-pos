@@ -41,31 +41,42 @@ interface ITransactionModalProps {
 function TransactionModal({transaction, onClose}: ITransactionModalProps) {
     return (
         <Modal>
-            <div className="text-center">
-                <h2 className="text-2xl font-bold">Transaction successful</h2>
-                <p>Amount: {transaction.amount}</p>
+            <div className="flex flex-col text-center">
+                <div className="text-2xl font-bold mb-5">Transaction successful</div>
+                <div className="flex justify-center">
+                    <div className="font-semibold mx-5">Amount:</div>
+                    <div className="mx-5">{transaction.amount},-</div>
+                </div>
+                <div className="text-center mt-5">
+                    <button
+                        onClick={() => {
+                            onClose();
+                        }}
+                        className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md w-1/5"
+                    >
+                        Close
+                    </button>
+                </div>
+            
             </div>
-            <button
-                onClick={() => {
-                    onClose();
-                }}
-                className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md"
-            >
-                Close
-            </button>
         </Modal>
     );
 }
 
-function AddNewSaleProductModal({onAddNewSaleProduct}: {onAddNewSaleProduct: (name: string, price: number) => void}){
+interface IAddNewSaleProductModalProps{
+    onAddNewSaleProduct: (name: string, price: number) => void;
+    onClose: () => void;
+}
+
+function AddNewSaleProductModal({onAddNewSaleProduct, onClose}: IAddNewSaleProductModalProps){
     const [name, setName] = useState<string>("")
     const [price, setPrice] = useState<number>(0)
     return (
         <Modal>
-            <div className="text-center">
+            <div className="flex flex-col">
                 <div className="text-2xl font-bold">Add new Sale product</div>
-                <div className="mt-4">
-                    <label htmlFor="name">Name</label>
+                <div className="flex mt-4 rounded-lg w-full p-2.5 m-2.5 justify-between">
+                    <label htmlFor="name" className="font-semibold">Name: </label>
                     <input
                         type="text"
                         id="name"
@@ -74,8 +85,8 @@ function AddNewSaleProductModal({onAddNewSaleProduct}: {onAddNewSaleProduct: (na
                         onChange={(e) => setName(e.target.value)}
                     />
                 </div>
-                <div className="mt-4">
-                    <label htmlFor="price">Price</label>
+                <div className="flex mt-4 rounded-lg w-full p-2.5 m-2.5 justify-between">
+                    <label htmlFor="price" className="font-semibold">Price: </label>
                     <input
                         type="number"
                         id="price"
@@ -85,18 +96,23 @@ function AddNewSaleProductModal({onAddNewSaleProduct}: {onAddNewSaleProduct: (na
                     />
                 </div>
                 
-                <div className="mt-4">
-                    <button
-                        type="submit"
-                        className="bg-green-500 text-white px-4 py-2 rounded-md"
-                        onClick={(e) => {
-                            e.preventDefault();
+                <div className="mt-4 text-center">
+                    
+                    <button 
+                        className="bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-10 rounded-md hover:bg-zinc-50 w-1/5 font-semibold"
+                        onClick={() => {
                             const name = (document.getElementById("name") as HTMLInputElement).value;
                             const price = Number((document.getElementById("price") as HTMLInputElement).value);
                             onAddNewSaleProduct(name, price);
                         }}
                     >
                         Add
+                    </button>
+                    <button 
+                        className="bg-zinc-300 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-10 rounded-md hover:bg-zinc-50 w-1/5 font-semibold"
+                        onClick={() => onClose()}
+                    >
+                        Close
                     </button>
                 </div>
             </div>

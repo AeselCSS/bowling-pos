@@ -60,27 +60,35 @@ function SaleProducts({saleProducts, setSaleProducts, setBasket}: SaleProductsPr
         setIsSaleModalOpen(false);
     }
 
+    function onCloseSaleModal() {
+        setIsSaleModalOpen(false);
+    }
+
     return (
         <>
             {isSaleModalOpen && 
-                <AddNewSaleProductModal onAddNewSaleProduct={onAddNewSaleProduct}/>  
+                <AddNewSaleProductModal onAddNewSaleProduct={onAddNewSaleProduct} onClose={onCloseSaleModal}/>  
             }
-            <div className="flex flex-col border border-zinc-400 rounded-md min-w-96 w-full bg-zinc-100">
-                <div className="p-2.5 m-2.5 font-bold text-lg text-center">
-                    Sale products
-                </div>
-                <div>
-                    <button 
-                        onClick={() => {
-                            setIsSaleModalOpen(true);
-                        }}
-                        className="bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 ml-10 rounded-md hover:bg-zinc-50 w-1/5"
-                    >
-                        Add
-                    </button> 
-                </div>
-            </div>
             <div className="flex flex-col border border-zinc-400 rounded-md w-full bg-zinc-100">
+                <div className="p-2.5 m-2.5 font-bold text-lg text-center">
+                    Consumables
+                </div>
+                <div className="flex mb-2">
+                    <div className="flex w-2/3 p-2.5 m-2.5">
+                        <div className="w-2/3 font-bold">Product:</div>
+                        <div className="w-1/3 font-bold text-center">Price:</div>
+                    </div>
+                    <div className="flex items-end">
+                        <button 
+                            className='bg-zinc-300 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 ml-10 rounded-md hover:bg-zinc-50 w-1.5/5 font-semibold'
+                            onClick={() => {
+                                setIsSaleModalOpen(true);
+                            }}
+                        >
+                            Add
+                        </button>
+                    </div>
+                </div>
                 {saleProducts.map((saleProduct) => {
                     return <SaleProduct key={saleProduct.id} saleProduct={saleProduct} onAddProduct={onAddProduct}/>
                 })}

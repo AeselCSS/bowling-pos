@@ -3,6 +3,7 @@ import {TransactionModal} from "../../../components/Modal";
 import type { IBasketProduct } from "../../../types/basketProduct";
 import useTransactions from "../../../hooks/useTransactions";
 import { ITransaction } from "../../../types/transaction";
+import { MdControlPoint, MdOutlineCancel } from "react-icons/md";
 
 interface IBasketButtonProps {
     basket: IBasketProduct[];
@@ -18,9 +19,9 @@ function BasketButton({basket, setBasket, setTransaction}: IBasketButtonProps) {
     }
 
     return (
-        <div>
+        <div className="flex justify-center">
             <button 
-                className="bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 ml-10 rounded-md hover:bg-zinc-50 w-1/5"
+                className="bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-10 rounded-md hover:bg-zinc-50 w-1/5 font-semibold"
                 onClick={() => {
                     handleCreateTransaction();
                 }}
@@ -28,10 +29,10 @@ function BasketButton({basket, setBasket, setTransaction}: IBasketButtonProps) {
                 Pay
             </button>
             <button 
-                className="bg-red-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 ml-10 rounded-md hover:bg-zinc-50 w-1/5"
+                className="bg-zinc-300 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-10 rounded-md hover:bg-zinc-50 w-1/5 font-semibold"
                 onClick={() => setBasket([])}
             >
-                Cancel
+                Clear
             </button>
         </div>
     )
@@ -45,16 +46,14 @@ interface IBasketProductProps {
 function BasketProduct({basketProduct, setBasket}: IBasketProductProps) {
     return (
         <div className="flex flex-row w-full">
-            <div>
-                <div className="flex bg-white border border-zinc-400 rounded-lg w-96 p-2.5 m-1">
-                    <div className="w-1/3 ">{basketProduct.name}:</div>
-                    <div className="w-1/3 text-center">{basketProduct.price},-</div>
-                    <div className="w-1/3 text-center">{basketProduct.quantity}</div>
-                </div>
+            <div className="flex bg-white border border-zinc-400 rounded-lg w-2/3 p-2.5 m-2.5">
+                <div className="w-1/3 ">{basketProduct.name}:</div>
+                <div className="w-1/3 text-center">{basketProduct.price},-</div>
+                <div className="w-1/3 text-center">{basketProduct.quantity}</div>
             </div>
-            <div className="flex items-end">
+            <div className="flex w-1/3 items-end">
                 <button 
-                    className='bg-green-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 ml-10 rounded-md hover:bg-zinc-50 w-1.5/5'
+                    className='bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-2 rounded-md hover:bg-zinc-50 w-1.5/5'
                     onClick={() => {
                         setBasket((prevBasket) => {
                             return prevBasket.map((prevBasketProduct) => {
@@ -66,10 +65,10 @@ function BasketProduct({basketProduct, setBasket}: IBasketProductProps) {
                         });
                     }}
                 > 
-                    +
+                    <MdControlPoint/>
                 </button>
                 <button 
-                    className='bg-red-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 ml-10 rounded-md hover:bg-zinc-50 w-1.5/5'
+                    className='bg-red-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 rounded-md hover:bg-zinc-50 w-1.5/5'
                     onClick={
                         () => {
                             setBasket((prevBasket) => {
@@ -82,7 +81,7 @@ function BasketProduct({basketProduct, setBasket}: IBasketProductProps) {
                             });
                     }}
                 >
-                    -
+                    <MdOutlineCancel/>
                 </button>
             </div>
         </div>
@@ -119,19 +118,25 @@ function Basket({basket, setBasket}: IBasketProps) {
                     transaction={transaction}
                 />
             }
-            <div className="flex flex-row border border-zinc-400 rounded-md w-5/6 bg-zinc-100">
-                <div className="flex flex-col w-3/5">
-                    <h2 className="text-lg font-bold m-2.5">Basket</h2>
-                    <div className="flex flex-col">
-                        {
-                            basket.map((basketProduct) => {
-                                return <BasketProduct key={basketProduct.id} basketProduct={basketProduct} setBasket={setBasket}/>
-                            })
-                        }
-                    </div>
-                    <BasketButton basket={basket} setBasket={setBasket} setTransaction={setTransaction}/>
+            <div className="flex flex-col border border-zinc-400 rounded-md w-full bg-zinc-100">
+                <div className="p-2.5 m-2.5 font-bold text-lg text-center">
+                    Basket
                 </div>
-            </div>
+                <div className="flex flex-col mb-2">
+                    <div className="flex w-2/3 p-2.5 m-2.5">
+                        <div className="w-1/3 font-bold">Product:</div>
+                        <div className="w-1/3 font-bold text-center">Price:</div>
+                        <div className="w-1/3 font-bold text-center">Quantity:</div>
+                    </div>
+                    {
+                        basket.map((basketProduct) => {
+                            return <BasketProduct key={basketProduct.id} basketProduct={basketProduct} setBasket={setBasket}/>
+                        })
+                    }
+                </div>
+                    
+                <BasketButton basket={basket} setBasket={setBasket} setTransaction={setTransaction}/>
+                </div>
         </>
     )
 }
