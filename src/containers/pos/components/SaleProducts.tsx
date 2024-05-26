@@ -77,7 +77,7 @@ function SaleProducts({saleProducts, setSaleProducts, setBasket}: SaleProductsPr
                         className="bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 ml-10 rounded-md hover:bg-zinc-50 w-1/5"
                     >
                         Add
-                    </button>
+                    </button> 
                 </div>
             </div>
             <div className="flex flex-col border border-zinc-400 rounded-md w-full bg-zinc-100">
