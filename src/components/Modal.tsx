@@ -1,13 +1,13 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useState } from "react";
 import { Dispatch, SetStateAction } from "react";
 import { ITransaction } from "../types/transaction";
 
-interface ConfirmModalProps {
+interface IConfirmModalProps {
     setIsOpen: Dispatch<SetStateAction<boolean>>;
     onConfirm: () => void;
 }
 
-function ConfirmModal({ setIsOpen, onConfirm }: ConfirmModalProps) {
+function ConfirmModal({ setIsOpen, onConfirm }: IConfirmModalProps) {
     return (
         <Modal>
             <div className="text-center">
@@ -33,7 +33,12 @@ function ConfirmModal({ setIsOpen, onConfirm }: ConfirmModalProps) {
     );
 }
 
-function TransactionModal({transaction, onClose}: {transaction:ITransaction, onClose: () => void}) {
+interface ITransactionModalProps {
+    transaction: ITransaction;
+    onClose: () => void;
+}
+
+function TransactionModal({transaction, onClose}: ITransactionModalProps) {
     return (
         <Modal>
             <div className="text-center">
@@ -52,6 +57,55 @@ function TransactionModal({transaction, onClose}: {transaction:ITransaction, onC
     );
 }
 
+function AddNewSaleProductModal({onAddNewSaleProduct}: {onAddNewSaleProduct: (name: string, price: number) => void}){
+    const [name, setName] = useState<string>("")
+    const [price, setPrice] = useState<number>(0)
+    return (
+        <Modal>
+            <div className="text-center">
+                <div className="text-2xl font-bold">Add new Sale product</div>
+                <div className="mt-4">
+                    <label htmlFor="name">Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        className="border border-gray-300 rounded-md px-2 py-1"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </div>
+                <div className="mt-4">
+                    <label htmlFor="price">Price</label>
+                    <input
+                        type="number"
+                        id="price"
+                        className="border border-gray-300 rounded-md px-2 py-1"
+                        value={(price === 0) ? "" : price}
+                        onChange={(e) => setPrice(Number(e.target.value))}
+                    />
+                </div>
+                
+                <div className="mt-4">
+                    <button
+                        type="submit"
+                        className="bg-green-500 text-white px-4 py-2 rounded-md"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            const name = (document.getElementById("name") as HTMLInputElement).value;
+                            const price = Number((document.getElementById("price") as HTMLInputElement).value);
+                            onAddNewSaleProduct(name, price);
+                        }}
+                    >
+                        Add
+                    </button>
+                </div>
+            </div>
+            
+        </Modal>
+    );
+
+}
+
 
 function Modal({ children }: PropsWithChildren) {
     return (
@@ -64,4 +118,4 @@ function Modal({ children }: PropsWithChildren) {
     );
 }
 
-export {Modal, ConfirmModal, TransactionModal};
+export {Modal, ConfirmModal, TransactionModal, AddNewSaleProductModal};

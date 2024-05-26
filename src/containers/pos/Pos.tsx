@@ -40,7 +40,7 @@ function SearchBar({setBookingId, setBookingEmail}: SearchBarProps){
 
 function Pos() {
     const { getAllById, getAllByEmail } = useBookings();
-    const { saleProducts } = useSaleProducts();
+    const { saleProducts, setSaleProducts } = useSaleProducts();
     const [bookings, setBookings] = useState<(IBowlingBooking | IAirHockeyBooking | IDinnerBooking)[]>([]);
     const [bookingId, setBookingId] = useState("");
     const [bookingEmail, setBookingEmail] = useState("");
@@ -66,7 +66,7 @@ function Pos() {
                     {!!bookings.length && <BookingResult bookings={bookings} setBookings={setBookings} setBasket={setBasket} />}
                 </div>
                 <div className="flex-row w-3/12 m-5">
-                    <SaleProducts saleProducts={saleProducts} setBasket={setBasket} />
+                    <SaleProducts saleProducts={saleProducts} setBasket={setBasket} setSaleProducts={setSaleProducts} />
                 </div>
                 {basket.length > 0 &&
                     <div className="flex-row w-3/12 m-5">

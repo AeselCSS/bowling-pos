@@ -2,6 +2,8 @@ import type { ISaleProduct } from "../../../types/saleProduct";
 import type { IBasketProduct } from "../../../types/basketProduct";
 import { MdControlPoint } from "react-icons/md";
 import { Dispatch, SetStateAction, useState } from 'react';
+import { AddNewSaleProductModal } from "../../../components/Modal";
+import useSaleProducts from "../../../hooks/useSaleProducts";
 
 interface SaleProductProps {
     saleProduct: ISaleProduct;
@@ -29,11 +31,13 @@ function SaleProduct({saleProduct, onAddProduct}: SaleProductProps) {
 
 interface SaleProductsProps {
     saleProducts: ISaleProduct[];
+    setSaleProducts: Dispatch<SetStateAction<ISaleProduct[]>>;
     setBasket: Dispatch<SetStateAction<(IBasketProduct)[]>>;
 }
 
-function SaleProducts({saleProducts, setBasket}: SaleProductsProps) {
-    const [isConsumableModalOpen, setIsConsumableModalOpen] = useState(false);
+function SaleProducts({saleProducts, setSaleProducts, setBasket}: SaleProductsProps) {
+    const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
+    const {add} = useSaleProducts();
 
     function onAddProduct(saleProduct: ISaleProduct) {
         const basketProduct: IBasketProduct = {id: saleProduct.id, name: saleProduct.name, price: saleProduct.price, quantity: 1};
@@ -50,8 +54,17 @@ function SaleProducts({saleProducts, setBasket}: SaleProductsProps) {
         });
     }
 
+    async function onAddNewSaleProduct(name: string, price: number) {
+        const newProduct = await add(name, price);
+        setSaleProducts((prevSaleProducts) => [...prevSaleProducts, newProduct]);
+        setIsSaleModalOpen(false);
+    }
+
     return (
         <>
+            {isSaleModalOpen && 
+                <AddNewSaleProductModal onAddNewSaleProduct={onAddNewSaleProduct}/>  
+            }
             <div className="flex flex-col border border-zinc-400 rounded-md min-w-96 w-full bg-zinc-100">
                 <div className="p-2.5 m-2.5 font-bold text-lg text-center">
                     Sale products
@@ -59,13 +72,11 @@ function SaleProducts({saleProducts, setBasket}: SaleProductsProps) {
                 <div>
                     <button 
                         onClick={() => {
-                            console.log("Add new product");
-
-                        }
-                        }
+                            setIsSaleModalOpen(true);
+                        }}
                         className="bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 ml-10 rounded-md hover:bg-zinc-50 w-1/5"
                     >
-                        Add new
+                        Add
                     </button>
                 </div>
             </div>
