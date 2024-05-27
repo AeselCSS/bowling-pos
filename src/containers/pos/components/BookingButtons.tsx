@@ -56,10 +56,3 @@ function BookingButtons({ booking, onCancel, onEditToggle, onAccept, isEditing, 
 }
 
 export default BookingButtons;
-
-
-
-/*<button
-    className='bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mr-2 rounded-md hover:bg-zinc-50 w-1.5/5'>
-    <MdControlPoint/></button>
- */
