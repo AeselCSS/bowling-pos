@@ -106,11 +106,30 @@ function useBookings() {
         }
     }
 
+    async function getBookingPrice(booking: IBowlingBooking | IAirHockeyBooking | IDinnerBooking): Promise<number>{
+        const bookingType = booking.hasOwnProperty('numberOfGuests') ? 'dinner' : booking.hasOwnProperty('laneId') ? 'bowling' : 'airhockey';
+
+        if(bookingType === 'dinner') {
+            return 0;
+        }
+
+        try {
+            const response = await fetch(`${url}/${bookingType}/${booking.id}/price`);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error(error);
+        }
+
+        return 0;
+    }
+
     return {
         useGetAllByEmail,
         useGetBookingById,
         update,
-        checkAvailability
+        checkAvailability,
+        getBookingPrice
     };
 }
 

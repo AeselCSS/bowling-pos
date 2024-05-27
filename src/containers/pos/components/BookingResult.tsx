@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {IBowlingBooking, IAirHockeyBooking, IDinnerBooking} from '../../../types/booking';
+import { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from '../../../types/booking';
+import { IBasketProduct } from '../../../types/basketProduct';
 import useBookings from '../../../hooks/useBookings';
 import BookingLine from './BookingLine';
 import BookingButtons from './BookingButtons';
@@ -10,6 +11,7 @@ interface BookingResultProps {
     fetchNextPage: () => void;
     hasNextPage: boolean;
     isFetchingNextPage: boolean;
+    setBasket: React.Dispatch<React.SetStateAction<(IBasketProduct)[]>>;
 }
 
 type OriginalBooking = IBowlingBooking | IAirHockeyBooking | IDinnerBooking | undefined;
@@ -17,8 +19,8 @@ type EditedBooking = {
     [key: string]: any;
 } & Partial<IBowlingBooking & IAirHockeyBooking & IDinnerBooking>;
 
-function BookingResult({bookings, setBookings, fetchNextPage, hasNextPage, isFetchingNextPage}: BookingResultProps) {
-    const {update, checkAvailability} = useBookings();
+function BookingResult({bookings, setBookings, fetchNextPage, hasNextPage, isFetchingNextPage, setBasket}: BookingResultProps) {
+    const {update, checkAvailability, getBookingPrice} = useBookings();
     const [editMode, setEditMode] = useState<{ [key: number]: boolean }>({});
     const [editedBookings, setEditedBookings] = useState<{ [key: number]: EditedBooking }>({});
     const [availabilityStatus, setAvailabilityStatus] = useState<{ [key: number]: boolean | null }>({});
@@ -43,6 +45,23 @@ function BookingResult({bookings, setBookings, fetchNextPage, hasNextPage, isFet
             if (observerRef.current) observerRef.current.disconnect();
         };
     }, [hasNextPage, fetchNextPage, isFetchingNextPage]);
+
+    async function onAddBookingToBasket(booking: IBowlingBooking | IAirHockeyBooking | IDinnerBooking) {
+        const bookingPrice = await getBookingPrice(booking);
+        const basketProduct: IBasketProduct = {
+            id: booking.id,
+            name: booking.customerEmail,
+            price: bookingPrice,
+            quantity: 1,
+        };
+
+        setBasket((prevBasket) => {
+            if(prevBasket.find((product) => product.id === basketProduct.id)) {
+                return prevBasket;
+            }
+            return [...prevBasket, basketProduct];
+        });
+    }
 
     function onCancel(id: number, bookingType: string) {
         update(id, {status: 'CANCELLED'}, bookingType);
@@ -153,36 +172,35 @@ function BookingResult({bookings, setBookings, fetchNextPage, hasNextPage, isFet
     return (
         <>
             {bookings.map((booking, index) => {
-                    if (!booking) return null;  // Skip undefined bookings
-                    const isEditing = editMode[booking.id] || false;
-                    const bookingType = booking.hasOwnProperty('laneId') ? 'bowling' : booking.hasOwnProperty('tableId') ? 'airHockey' : 'dinner';
-                    return (
-                        <div key={index}
-                             className={`flex flex-row border border-zinc-400 rounded-md min-w-96 w-2/6 bg-zinc-100 m-5 ${isEditing ? 'animate-flip' : ''}`}>
-                            <div className="flex flex-col w-3/5">
-                                {
-                                    Object.entries(booking).map(([key, value]) => (
-                                        <BookingLine
-                                            key={key}
-                                            bookingLine={{[key]: value}}
-                                            editable={isEditing && ['customerEmail', 'date', 'start', 'end', 'status', 'childFriendly'].includes(key)}
-                                            onFieldChange={(field, newValue) => handleFieldChange(booking.id, field, newValue, bookingType)}
-                                            availability={availabilityStatus[booking.id] || null}
-                                        />
-                                    ))
-                                }
-                            </div>
-                            <BookingButtons
-                                booking={booking}
-                                onCancel={onCancel}
-                                onEditToggle={onEditToggle}
-                                onAccept={onAccept}
-                                isEditing={isEditing}
-                            />
+                const isEditing = editMode[booking.id] || false;
+                const bookingType = booking.hasOwnProperty('laneId') ? 'bowling' : booking.hasOwnProperty('tableId') ? 'airHockey' : 'dinner';
+                return (
+                    <div key={index}
+                         className={`flex flex-row border border-zinc-400 rounded-md min-w-96 w-full bg-zinc-100 my-5 ${isEditing ? 'animate-flip' : ''}`}>
+                        <div className="flex flex-col w-3/5">
+                            {
+                                Object.entries(booking).map(([key, value]) => (
+                                    <BookingLine
+                                        key={key}
+                                        bookingLine={{ [key]: value }}
+                                        editable={isEditing && ['customerEmail', 'date', 'start', 'end', 'status', 'childFriendly'].includes(key)}
+                                        onFieldChange={(field, newValue) => handleFieldChange(booking.id, field, newValue, bookingType)}
+                                        availability={availabilityStatus[booking.id] || null}
+                                    />
+                                ))
+                            }
                         </div>
-                    );
-                }
-            )}
+                        <BookingButtons
+                            booking={booking}
+                            onCancel={onCancel}
+                            onEditToggle={onEditToggle}
+                            onAccept={onAccept}
+                            isEditing={isEditing}
+                            onAddBookingToBasket={onAddBookingToBasket}
+                        />
+                    </div>
+                );
+            })}
             <div ref={loadMoreRef} style={{height: '20px'}}/>
         </>
     );

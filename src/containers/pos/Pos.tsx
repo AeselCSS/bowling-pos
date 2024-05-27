@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
-import useBookings from '../../hooks/useBookings';
-import { Dispatch, SetStateAction } from 'react';
-import PageLayout from "../../components/PageLayout";
 import BookingResult from "./components/BookingResult";
+import SaleProducts from "./components/SaleProducts";
+import Basket from "./components/Basket";
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import useBookings from '../../hooks/useBookings';
+import useSaleProducts from '../../hooks/useSaleProducts';
+import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from '../../types/booking';
+import PageLayout from "../../components/PageLayout";
+import { IBasketProduct } from "../../types/basketProduct";
+
 
 interface SearchBarProps {
     setBookingId: Dispatch<SetStateAction<string>>;
@@ -36,9 +41,10 @@ function SearchBar({ setBookingId, setBookingEmail }: SearchBarProps) {
 
 function Pos() {
     const { useGetAllByEmail, useGetBookingById } = useBookings();
+    const { saleProducts, setSaleProducts } = useSaleProducts();
     const [bookingId, setBookingId] = useState<string>("");
     const [bookingEmail, setBookingEmail] = useState<string>("");
-
+    const [basket, setBasket] = useState<(IBasketProduct)[]>([]);
     const {
         data: emailData,
         fetchNextPage,
@@ -57,13 +63,28 @@ function Pos() {
         <PageLayout>
             <div className="h-1"></div>
             <SearchBar setBookingId={setBookingId} setBookingEmail={setBookingEmail} />
-                <BookingResult
-                    bookings={bookingData}
-                    setBookings={() => {}}
-                    fetchNextPage={fetchNextPage}
-                    hasNextPage={hasNextPage || false}
-                    isFetchingNextPage={isFetchingNextPage}
-                />
+
+            <div className="flex">
+                <div className="flex-row w-2/6 m-5">
+                    <SearchBar setBookingId={setBookingId} setBookingEmail={setBookingEmail} />
+                    {!!bookingData.length &&
+                        <BookingResult
+                            bookings={bookingData}
+                            setBasket={setBasket}
+                            fetchNextPage={fetchNextPage}
+                            hasNextPage={hasNextPage || false}
+                            isFetchingNextPage={isFetchingNextPage}
+                        />}
+                </div>
+                <div className="flex-row w-3/12 m-5">
+                    <SaleProducts saleProducts={saleProducts} setBasket={setBasket} setSaleProducts={setSaleProducts} />
+                </div>
+                {basket.length > 0 &&
+                    <div className="flex-row w-3/12 m-5">
+                        <Basket basket={basket} setBasket={setBasket} />
+                    </div>
+                }
+            </div>
         </PageLayout>
     );
 }
