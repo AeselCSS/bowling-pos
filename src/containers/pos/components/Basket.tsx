@@ -54,7 +54,7 @@ function BasketProduct({basketProduct, setBasket}: IBasketProductProps) {
             <div className="flex w-1/3 items-end">
                 {basketProduct.type === "product" &&
                     <button 
-                        className='bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-2 rounded-md hover:bg-zinc-50 w-1.5/5'
+                        className='bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-1 rounded-md hover:bg-zinc-50 w-1.5/5'
                         onClick={() => {
                             setBasket((prevBasket) => {
                                 return prevBasket.map((prevBasketProduct) => {
@@ -71,7 +71,7 @@ function BasketProduct({basketProduct, setBasket}: IBasketProductProps) {
                 }
                 
                 <button 
-                    className='bg-red-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 rounded-md hover:bg-zinc-50 w-1.5/5'
+                    className='bg-red-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-1 rounded-md hover:bg-zinc-50 w-1.5/5'
                     onClick={
                         () => {
                             setBasket((prevBasket) => {
