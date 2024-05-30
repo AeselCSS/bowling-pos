@@ -52,7 +52,9 @@ function Pos() {
         if(!booking) return;
         const bookingType = booking?.hasOwnProperty('laneId') ? 'bowling' : booking?.hasOwnProperty('tableId') ? 'airhockey' : 'dinner';
         await update(id, {status: "PAID"}, bookingType);
-        setBookings(prev => prev.map(booking => booking && booking.id === id ? { ...booking, status: "PAID" } : booking));
+        setBookings([]);
+        setBookingEmail("");
+        setBookingId("");
     }
 
     return (
