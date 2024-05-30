@@ -40,7 +40,7 @@ function SaleProducts({saleProducts, setSaleProducts, setBasket}: SaleProductsPr
     const {add} = useSaleProducts();
 
     function onAddProduct(saleProduct: ISaleProduct) {
-        const basketProduct: IBasketProduct = {id: saleProduct.id, name: saleProduct.name, price: saleProduct.price, quantity: 1};
+        const basketProduct: IBasketProduct = {id: saleProduct.id, name: saleProduct.name, price: saleProduct.price, quantity: 1, type: "product"};
         setBasket((prevBasket) =>{
             if(prevBasket.find((basketProduct) => basketProduct.id === saleProduct.id)){
                 return prevBasket.map((basketProduct) => {

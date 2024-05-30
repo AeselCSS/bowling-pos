@@ -20,7 +20,7 @@ function BookingButtons({ booking, onCancel, onEditToggle, onAccept, isEditing, 
 
     return (
         <>
-            {booking.status !== 'CANCELLED' && <>
+            {(booking.status !== 'CANCELLED' && booking.status !== 'PAID') && <>
                 {showCancelModal && (
                     <ConfirmModal
                         setIsOpen={setShowCancelModal}

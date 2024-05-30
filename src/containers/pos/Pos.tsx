@@ -38,7 +38,7 @@ function SearchBar({ setBookingId, setBookingEmail }: SearchBarProps) {
 }
 
 function Pos() {
-    const { fetchBookingsByEmail, fetchBookingById, bookings, setBookings, hasNextPage, isFetchingNextPage, fetchNextPage } = useBookings();
+    const { fetchBookingsByEmail, fetchBookingById, update, bookings, setBookings, hasNextPage, isFetchingNextPage, fetchNextPage } = useBookings();
     const { saleProducts, setSaleProducts } = useSaleProducts();
     const [bookingId, setBookingId] = useState<string>("");
     const [bookingEmail, setBookingEmail] = useState<string>("");
@@ -47,11 +47,16 @@ function Pos() {
     fetchBookingsByEmail(bookingEmail);
     fetchBookingById(Number(bookingId));
 
+    const setBookingPaid = async (id: number) => {
+        const booking = bookings.find(booking => booking && booking.id === id);
+        if(!booking) return;
+        const bookingType = booking?.hasOwnProperty('laneId') ? 'bowling' : booking?.hasOwnProperty('tableId') ? 'airhockey' : 'dinner';
+        await update(id, {status: "PAID"}, bookingType);
+        setBookings(prev => prev.map(booking => booking && booking.id === id ? { ...booking, status: "PAID" } : booking));
+    }
+
     return (
         <PageLayout>
-
-
-
             <div className="flex">
                 <div className="flex flex-col w-2/6">
                     <SearchBar setBookingId={setBookingId} setBookingEmail={setBookingEmail}/>
@@ -73,7 +78,7 @@ function Pos() {
                 </div>
                 {basket.length > 0 &&
                     <div className="flex-row w-3/12 mt-5">
-                        <Basket basket={basket} setBasket={setBasket}/>
+                        <Basket basket={basket} setBasket={setBasket} setBookingPaid={setBookingPaid}/>
                     </div>
                 }
             </div>

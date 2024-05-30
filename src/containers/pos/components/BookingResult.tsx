@@ -53,6 +53,7 @@ function BookingResult({ bookings, setBookings, fetchNextPage, hasNextPage, isFe
             name: booking.customerEmail,
             price: bookingPrice,
             quantity: 1,
+            type: 'reservation',
         };
 
         setBasket(prevBasket => {

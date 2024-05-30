@@ -52,21 +52,24 @@ function BasketProduct({basketProduct, setBasket}: IBasketProductProps) {
                 <div className="w-1/3 text-center">{basketProduct.quantity}</div>
             </div>
             <div className="flex w-1/3 items-end">
-                <button 
-                    className='bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-2 rounded-md hover:bg-zinc-50 w-1.5/5'
-                    onClick={() => {
-                        setBasket((prevBasket) => {
-                            return prevBasket.map((prevBasketProduct) => {
-                                if (prevBasketProduct.id === basketProduct.id) {
-                                    return {...prevBasketProduct, quantity: prevBasketProduct.quantity + 1};
-                                }
-                                return prevBasketProduct;
+                {basketProduct.type === "product" &&
+                    <button 
+                        className='bg-green-600 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 mx-2 rounded-md hover:bg-zinc-50 w-1.5/5'
+                        onClick={() => {
+                            setBasket((prevBasket) => {
+                                return prevBasket.map((prevBasketProduct) => {
+                                    if (prevBasketProduct.id === basketProduct.id) {
+                                        return {...prevBasketProduct, quantity: prevBasketProduct.quantity + 1};
+                                    }
+                                    return prevBasketProduct;
+                                });
                             });
-                        });
-                    }}
-                > 
-                    <MdControlPoint/>
-                </button>
+                        }}
+                    > 
+                        <MdControlPoint/>
+                    </button>
+                }
+                
                 <button 
                     className='bg-red-500 border-zinc-500 border cursor-pointer text-black text-center py-2 px-4 my-3 rounded-md hover:bg-zinc-50 w-1.5/5'
                     onClick={
@@ -91,15 +94,21 @@ function BasketProduct({basketProduct, setBasket}: IBasketProductProps) {
 interface IBasketProps {
     basket: IBasketProduct[];
     setBasket: Dispatch<SetStateAction<IBasketProduct[]>>;
+    setBookingPaid: (id: number) => void;
 }
 
-function Basket({basket, setBasket}: IBasketProps) {
+function Basket({basket, setBasket, setBookingPaid}: IBasketProps) {
     const { create } = useTransactions();
     const [showTransactionModal, setTransactionModal] = useState(false);
     const [transaction, setTransaction] = useState<ITransaction>({amount: 0});
 
     useEffect(() => {
         if (transaction.amount > 0) {
+            basket.forEach((basketProduct) => {
+                if (basketProduct.type === "reservation") {
+                    setBookingPaid(basketProduct.id);
+                }
+            });
             create(transaction);
             setTransactionModal(true);
         } 
