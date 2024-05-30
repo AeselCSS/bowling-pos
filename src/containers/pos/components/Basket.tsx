@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {TransactionModal} from "../../../components/Modal";
 import type { IBasketProduct } from "../../../types/basketProduct";
-import type { IBowlingBooking, IAirHockeyBooking, IDinnerBooking } from "../../../types/booking";
 import useTransactions from "../../../hooks/useTransactions";
 import { ITransaction } from "../../../types/transaction";
 import { MdControlPoint, MdOutlineCancel } from "react-icons/md";
